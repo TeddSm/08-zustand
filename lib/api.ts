@@ -27,15 +27,18 @@ export const fetchNotes = async ({
   search?: string;
   tag?: string;
 }): Promise<FetchNotesResponse> => {
-  const response = await api.get<FetchNotesResponse>("/notes", {
-    params: {
-      page,
-      perPage,
-      search,
-      tag,
-      sortBy: "created",
-    },
-  });
+  const params: Record<string, string | number> = {
+    page,
+    perPage,
+  };
+  if (search && search.trim() !== "") {
+    params.search = search;
+  }
+
+  if (tag && tag !== "" && tag !== "all") {
+    params.tag = tag;
+  }
+  const response = await api.get<FetchNotesResponse>("/notes", { params });
   return response.data;
 };
 
