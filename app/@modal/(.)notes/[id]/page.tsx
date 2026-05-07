@@ -20,7 +20,7 @@ export default async function NoteModalPage({ params }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NotePreview id={id} />
+      <NotePreview />
     </HydrationBoundary>
   );
 }
