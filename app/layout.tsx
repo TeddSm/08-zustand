@@ -1,16 +1,30 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { TanStackProvider } from "../components/TanStackProvider/TanStackProvider";
 import { Header } from "@/components/Header/Header";
 import { Footer } from "@/components/Footer/Footer";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Roboto } from "next/font/google"; 
 
 export const metadata: Metadata = {
   title: "NoteHub",
   description: "Personal notes management application",
+  openGraph: {
+    title: "NoteHub",
+    description: "Personal notes management application",
+    images: [
+      {
+        url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+      },
+    ],
+  },
 };
+
+const roboto = Roboto({
+  weight: ["400", "500", "700"], 
+  subsets: ["latin", "cyrillic"], 
+  variable: "--font-roboto",      
+  display: "swap",                
+});
 
 export default function RootLayout({
   children,
@@ -21,7 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={roboto.className}>
         <TanStackProvider>
           <div className="wrapper">
             <Header />

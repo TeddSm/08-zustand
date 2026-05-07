@@ -7,8 +7,7 @@ import { fetchNotes } from "@/lib/api";
 import { NoteList } from "@/components/NoteList/NoteList";
 import { SearchBox } from "@/components/SearchBox/SearchBox";
 import { Pagination } from "@/components/Pagination/Pagination";
-import { Modal } from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm"; 
+import Link from "next/link"; 
 
 interface NotesClientProps {
   currentTag: string;
@@ -17,11 +16,7 @@ interface NotesClientProps {
 export default function NotesClient({ currentTag }: NotesClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
-
   const debouncedSearch = useDebounce(searchQuery, 500);
-
   const { data, isLoading } = useQuery({
     queryKey: ["notes", currentTag, debouncedSearch, page],
     queryFn: () =>
@@ -31,22 +26,6 @@ export default function NotesClient({ currentTag }: NotesClientProps) {
         page: page,
       }),
   });
-
-  const handleOpenCreateModal = () => {
-    setSelectedNoteId(null); 
-    setIsModalOpen(true);
-  };
-
-  const openEditModal = (id: string) => {
-    setSelectedNoteId(id);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedNoteId(null);
-  };
-
   const notes = data?.notes || [];
   const totalPages = data?.totalPages || 1;
 
@@ -55,12 +34,18 @@ export default function NotesClient({ currentTag }: NotesClientProps) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h1>Notes: {currentTag || "All"}</h1>
         
-        <button 
-          onClick={handleOpenCreateModal}
-          style={{ padding: '10px 20px', cursor: 'pointer' }}
+        <Link 
+          href="/notes/action/create" 
+          style={{ 
+            padding: '10px 20px', 
+            backgroundColor: '#0070f3', 
+            color: 'white', 
+            borderRadius: '5px',
+            textDecoration: 'none'
+          }}
         >
-          Add Note
-        </button>
+          Create note +
+        </Link>
       </div>
 
       <SearchBox value={searchQuery} onChange={(v) => { setSearchQuery(v); setPage(1); }} />
@@ -69,7 +54,7 @@ export default function NotesClient({ currentTag }: NotesClientProps) {
         <p>Loading...</p>
       ) : (
         <>
-          <NoteList notes={notes} onNoteClick={openEditModal} />
+          <NoteList notes={notes} onNoteClick={(id) => console.log('Navigate to note', id)} />
           
           {totalPages > 1 && (
             <Pagination
@@ -79,15 +64,6 @@ export default function NotesClient({ currentTag }: NotesClientProps) {
             />
           )}
         </>
-      )}
-
-      {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <NoteForm 
-            onClose={closeModal} 
-            noteId={selectedNoteId} 
-          />
-        </Modal>
       )}
     </div>
   );

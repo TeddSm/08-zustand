@@ -1,5 +1,21 @@
 import Link from 'next/link';
 import css from './not-found.module.css';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Not Found",
+  description: "This page does not exist",
+  openGraph: {
+    title: "Not Found",
+    description: "This page does not exist",
+    url: "/not-found",
+    images: [
+      {
+        url: "https://ac.goit.global/fullstack/react/notehub-og-meta.jpg",
+      },
+    ],
+  },
+};
 
 export default function NotFound() {
   return (
